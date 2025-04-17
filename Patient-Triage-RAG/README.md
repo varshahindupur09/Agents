@@ -73,7 +73,7 @@ cd patient_triage_gen_ai
 **Step 2: Set up a virtual environment and install dependencies:**
 
 ```
-python -m venv .venv
+python3.12 -m venv .venv
 source .venv/bin/activate  # On Windows: .venv\Scripts\activate
 pip install -r requirements.txt
 ```
@@ -85,25 +85,16 @@ pip install -r requirements.txt
 GROQ_API_KEY=enter_your_groq_api_key_here
 ```
 
-- Initialize ChromaDB with medical guidelines
-```
-python app/chromadb_utils.py
-```
-
-- Run the FastAPI server:
-```
-uvicorn app.main:app --reload
-```
-
-- Use the console interface:
-```
-python console_interfaces.py
-```
-- To use React UI
+- To use React UI (frontend)
 ```
 cd ui
 npm install
 npm start
+```
+
+- To start backend
+```
+python3.12 app.py
 ```
 
 ## 🖥️ Usage
@@ -112,7 +103,7 @@ npm start
 
 - Run the console interface:
 ```
-python console_interfaces.py
+python3.12 console_interfaces.py
 ```
 ### Output:
 ```
@@ -164,6 +155,19 @@ Response:
   "confidence": 0.95,
   "guidelines_used": ["myocardial infarction"]
 }
+```
+
+### Troubleshooting
+The most common issue you would face is upgradation.
+Kindly fix them by running the following commands.
+```
+nvm install 20
+```
+```
+nvm use 20
+```
+```
+npm install react-scripts@5.0.1
 ```
 
 ## 📊 Example Domains for Testing

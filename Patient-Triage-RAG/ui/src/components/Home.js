@@ -26,7 +26,9 @@ export default function Home() {
         },
         body: JSON.stringify({ symptoms, history, diagnosis }),
       });
-  
+      
+      console.log('Sending request to backend with:', { symptoms, history, diagnosis });
+      console.log('Request URL:', 'http://localhost:8001/assign-triage-level/');
       console.log('response:', response);
   
       if (!response.ok) {
@@ -35,6 +37,7 @@ export default function Home() {
   
       const data = await response.json();
       setReport(data);
+      console.log("🎯 Current report:", report);
     } catch (error) {
       setError('Error fetching triage report. Please try again.');
       console.error('Error:', error);

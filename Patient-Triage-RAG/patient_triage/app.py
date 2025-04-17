@@ -38,7 +38,7 @@ app = FastAPI()
 # CORS Middleware
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000","http://192.168.1.143:3000"],
+    allow_origins=["http://localhost:3000"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -174,7 +174,7 @@ def generate_structured_triage_report(symptoms: str, history: str, diagnosis: st
     # Step 3: Generate the triage report using Groq (RAG)
     try:
         response = client.chat.completions.create(
-            model="llama-3.2-90b-vision-preview",  # Use the appropriate Groq model
+            model="meta-llama/llama-4-scout-17b-16e-instruct",  # Use the appropriate Groq model
             messages=[
                 {"role": "system", "content": system_prompt},
                 {"role": "user", "content": user_input}
@@ -184,6 +184,9 @@ def generate_structured_triage_report(symptoms: str, history: str, diagnosis: st
             top_p=1,
             response_format={"type": "json_object"}
         )
+
+        # Check if the response is valid
+        print("Response Validation:", response)
 
         response_data = json.loads(response.choices[0].message.content)
 
@@ -217,7 +220,7 @@ async def read_root():
     return {"message": "Welcome to the Patient Triage Application"}
 
 @app.post("/assign-triage-level/", response_model=TriageResponse)
-@limiter.limit("10/minute")
+@limiter.limit("10/minute") # Rate limit to 10 requests per minute
 async def assign_triage_level(
     request: Request,
     # symptoms: str = Form(...),
@@ -226,11 +229,13 @@ async def assign_triage_level(
     triage_request: TriageRequest
 ):
     try:
+        print("➡️ Received request with:", triage_request.dict())
         report = generate_structured_triage_report(
             triage_request.symptoms, 
             triage_request.history, 
             triage_request.diagnosis
         )
+        print("✅ Generated triage report")
         # return report
         return TriageResponse(**report)
     except HTTPException as e:
